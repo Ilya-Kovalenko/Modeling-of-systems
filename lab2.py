@@ -1,9 +1,3 @@
-# a = [[1.0, 3.0, 1.0],
-#      [3.0, 3.0, 1.0],
-#      [5.0, 12.0, 2.0]]
-# b = [1.0, 2.0, 3.0]
-
-
 def gauss(matrix, tail):
     n = len(matrix)
 
@@ -44,7 +38,10 @@ def gauss(matrix, tail):
         x[i] = tail[i]
         for j in range(i + 1, n):
             x[i] -= matrix[i][j] * x[j]
-        x[i] /= matrix[i][i]
+        if matrix[i][i] == 0:
+            raise Exception("Матрица вырожденная. Решение СЛАУ методом Гаусса невозможно")
+        else:
+            x[i] /= matrix[i][i]
 
     return x
 
@@ -62,4 +59,7 @@ def read_matrix():
 
 if __name__ == "__main__":
     a, b = read_matrix()
-    print(gauss(a, b))
+    try:
+        print('Корни СЛАУ:', gauss(a, b))
+    except Exception as e:
+        print(e)
