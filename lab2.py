@@ -1,5 +1,6 @@
 def gauss(matrix, tail):
     n = len(matrix)
+    x_order = [i for i in range(n)]  # считает порядок x по столбцам
 
     # прямой ход
     for i in range(n-1):
@@ -25,6 +26,8 @@ def gauss(matrix, tail):
             for j in range(n):
                 matrix[j][max_x], matrix[j][i] = matrix[j][i], matrix[j][max_x]
 
+            x_order[i], x_order[max_x] = x_order[max_x], x_order[i]
+
         # приведение к верхнетреугольному виду
         for j in range(i+1, n):
             ratio = matrix[j][i] / matrix[i][i]
@@ -43,7 +46,12 @@ def gauss(matrix, tail):
         else:
             x[i] /= matrix[i][i]
 
-    return x
+    result = []
+    for i in range(n):
+        result.append((x[i], x_order[i]))
+    result.sort(key=lambda z: z[1])
+
+    return [z[0] for z in result]
 
 
 def read_matrix():
@@ -51,6 +59,8 @@ def read_matrix():
     tail = []
     with open('input.txt') as file:
         for line in file.readlines():
+            if line == "\n" or line == "":
+                continue
             separated_line = line.split()
             matrix.append(list(map(float, separated_line[:-1])))
             tail.append(float(separated_line[-1]))
@@ -60,6 +70,12 @@ def read_matrix():
 if __name__ == "__main__":
     a, b = read_matrix()
     try:
-        print('Корни СЛАУ:', gauss(a, b))
+        solution = gauss(a, b)
+        print('Корни СЛАУ:')
+        for i in range(len(solution)):
+            print(f'X{i + 1} = {round(solution[i], 10)}')
     except Exception as e:
         print(e)
+
+
+# https://mipt.lectoriy.ru/lecture/Maths-NumAnalysis-L03-Aristova-140917.03?video=local#materials
